@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/huuva-backend.iml" filepath="$PROJECT_DIR$/.idea/huuva-backend.iml" />
+      <module fileurl="file://E:/Mega/Pruebas tecnicas/example Jorge/wolt-opening-hours/.idea/wolt-opening-hours.iml" filepath="E:/Mega/Pruebas tecnicas/example Jorge/wolt-opening-hours/.idea/wolt-opening-hours.iml" />
+    </modules>
+  </component>
+</project>
