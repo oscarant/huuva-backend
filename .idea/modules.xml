@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/huuva-backend.iml" filepath="$PROJECT_DIR$/.idea/huuva-backend.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../Viperinha/.idea/viperinha.iml" filepath="$PROJECT_DIR$/../Viperinha/.idea/viperinha.iml" />
       <module fileurl="file://E:/Mega/Pruebas tecnicas/example Jorge/wolt-opening-hours/.idea/wolt-opening-hours.iml" filepath="E:/Mega/Pruebas tecnicas/example Jorge/wolt-opening-hours/.idea/wolt-opening-hours.iml" />
     </modules>
   </component>
