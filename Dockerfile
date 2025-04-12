@@ -15,7 +15,7 @@ COPY pyproject.toml poetry.lock* /app/
 RUN poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi
 
 # Copy the rest of the application code
-COPY . /app/
+COPY app /app/
 
 # Expose the FastAPI port
 EXPOSE 8000
