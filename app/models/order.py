@@ -66,7 +66,7 @@ class Item(Base):
     )
 
     name = Column(String, nullable=False)
-    plu = Column(String, nullable=False)
+    plu = Column(String, nullable=False, index=True)
     quantity = Column(Integer, nullable=False)
 
     status = Column(

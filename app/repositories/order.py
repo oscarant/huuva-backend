@@ -21,7 +21,7 @@ def create_order(db: Session, order_in: OrderCreate) -> OrderModel:
     Create a new Order (and associated items/status history) in the database.
 
     Assumptions:
-      - The account field uniquely identifies a customer.
+        - The account field uniquely identifies a customer.
     """
     order = OrderModel(
         account=order_in.account,
@@ -84,6 +84,19 @@ def update_order_status(
     db.commit()
     db.refresh(order)
     return order
+
+
+def get_item_by_plu(db: Session, order_id: str, plu: str) -> Optional[ItemModel]:
+    """
+    Retrieve an item by its PLU code within a specific order.
+    I assume that each order has unique PLU values for items.
+    """
+    result = (
+        db.query(ItemModel)
+        .filter(ItemModel.order_id == order_id, ItemModel.plu == plu)
+        .first()
+    )
+    return cast(Optional[ItemModel], result)
 
 
 def update_item_status(

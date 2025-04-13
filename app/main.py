@@ -11,4 +11,4 @@ if SENTRY_DSN:
 
 app = FastAPI(title="Huuva Order Management API")
 # TODO: Uncomment the following line to include the orders router
-# app.include_router(orders_router, prefix="/v1/orders")
+# app.include_router(orders_router, prefix="/v1")

@@ -3,6 +3,8 @@ from enum import Enum
 from typing import List, Optional
 from uuid import UUID
 
+from pydantic import Field
+
 from app.schemas.base import BaseSchema, OrmSchema
 
 
@@ -30,7 +32,11 @@ class DeliveryAddress(BaseSchema):
 class ItemCreate(BaseSchema):
     name: str
     plu: str
-    quantity: int
+    quantity: int = Field(
+        ...,
+        ge=1,  # Assuming quantity should be a positive integer
+        description="Quantity of the item",
+    )
     status: Optional[ItemStatus] = ItemStatus.ORDERED
 
 
