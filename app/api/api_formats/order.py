@@ -2,20 +2,18 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from pydantic import BaseModel
-
 from app.api.api_formats.base import BaseSchema, OrmSchema
 from app.api.api_formats.item import Item, ItemCreate
 from app.api.api_formats.order_status import OrderStatus, OrderStatusHistory
 
 
-class DeliveryAddress(BaseModel):
+class DeliveryAddress(BaseSchema):
     city: str
     street: str
     postal_code: str
 
 
-class Customer(BaseModel):
+class Customer(BaseSchema):
     name: str
     phone_number: str
 

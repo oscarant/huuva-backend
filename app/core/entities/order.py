@@ -7,7 +7,6 @@ from app.core.entities.item import Item, ItemCreate
 from app.core.entities.order_status import (
     OrderStatus,
     OrderStatusHistory,
-    OrderStatusHistoryCreate,
 )
 
 
@@ -17,17 +16,23 @@ class DeliveryAddress(BaseSchema):
     postal_code: str
 
 
+class Customer(BaseSchema):
+    name: str
+    phone_number: str
+
+
 class OrderCreate(BaseSchema):
+    _id: Optional[UUID] = None
+    created: Optional[datetime] = None
     account: UUID
     brand_id: UUID
     channel_order_id: str
-    customer_name: str
-    customer_phone: str
-    pickup_time: datetime
-    status: OrderStatus
+    customer: Customer
     delivery_address: DeliveryAddress
+    pickup_time: datetime
     items: List[ItemCreate]
-    status_history: Optional[List[OrderStatusHistoryCreate]] = None
+    status: OrderStatus  # TODO: Ensure returning the status name
+    status_history: List[OrderStatusHistory]
 
 
 class OrderUpdate(BaseSchema):
@@ -43,8 +48,8 @@ class Order(OrmSchema):
     channel_order_id: str
     customer_name: str
     customer_phone: str
-    pickup_time: datetime
-    status: OrderStatus
     delivery_address: DeliveryAddress
+    pickup_time: datetime
     items: List[Item]
+    status: OrderStatus  # TODO: Ensure returning the status name
     status_history: List[OrderStatusHistory]

@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 from uuid import UUID
 
 from pydantic import Field
@@ -28,3 +28,4 @@ class Item(OrmSchema):
     plu: str
     quantity: int
     status: ItemStatus
+    status_history: List[ItemStatus]

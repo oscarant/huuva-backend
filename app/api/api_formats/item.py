@@ -1,5 +1,4 @@
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import Field
 
@@ -18,8 +17,11 @@ class ItemCreate(BaseSchema):
     status: Optional[ItemStatus] = ItemStatus.ORDERED
 
 
+class ItemUpdate(BaseSchema):
+    status: ItemStatus
+
+
 class Item(OrmSchema):
-    id: UUID
     plu: str
     name: str
     quantity: int = Field(

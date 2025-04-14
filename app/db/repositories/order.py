@@ -26,6 +26,7 @@ class OrderRepository:
             - Delivery address fields are provided in the nested 'delivery_address' object.
         """
         order = OrderModel(
+            id=order_in._id,
             account=order_in.account,
             brand_id=order_in.brand_id,
             channel_order_id=order_in.channel_order_id,
