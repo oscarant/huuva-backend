@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from uuid import UUID
 
 from app.core.entities.order import Order, OrderCreate, OrderUpdate
 from app.db.mappings.order import order_db_to_entity
@@ -24,7 +25,7 @@ class OrderService:
         order = self.order_repository.create(order_in)
         return order_db_to_entity(order)
 
-    def get(self, order_id: str) -> Order:
+    def get(self, order_id: UUID) -> Order:
         """
         Retrieve an order by its unique ID.
         This method uses the repository to fetch the order from the database.
@@ -33,7 +34,7 @@ class OrderService:
         order = self.order_repository.get(order_id)
         return order_db_to_entity(order)
 
-    def update(self, order_id: str, order_update: OrderUpdate) -> Order:
+    def update(self, order_id: UUID, order_update: OrderUpdate) -> Order:
         """
         Update the status of an order.
         This method takes an OrderUpdate object, which contains the new status,

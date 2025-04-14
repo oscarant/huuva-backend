@@ -2,7 +2,7 @@ import sentry_sdk
 from fastapi import FastAPI
 
 from app.api.router.order import router as orders_router
-from app.config.config import settings
+from app.config.settings import settings
 from app.exceptions.error_handler import register_exception_handlers
 
 # Initialize Sentry for error tracking and logging

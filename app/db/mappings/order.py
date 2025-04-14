@@ -50,8 +50,7 @@ def order_db_to_entity(order: Order) -> OrderEntity:
         items=[item_db_to_entity(item) for item in order.items],
         status=order.status,
         status_history=[
-            OrderStatusHistory.model_validate(hist, from_attributes=True)
-            for hist in order.status_history
+            OrderStatusHistory.model_validate(hist) for hist in order.status_history
         ],
     )
     return order_entity

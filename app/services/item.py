@@ -19,14 +19,13 @@ class ItemService:
         # Use model validate
         item = Item.model_validate(
             self.item_repository.get(order_id, plu),
-            from_attributes=True,
         )
         return cast(Item, item)
 
-    def update(self, order_id: UUID, item_id: UUID, item_update: ItemUpdate) -> Item:
+    def update(self, order_id: UUID, plu: str, item_update: ItemUpdate) -> Item:
         """
         Atomically update the status of an individual order item and log the change.
         The logic of the logging is handled in the repository, but it should be
         here. I decided to keep the logic in the repository for practicability reasons.
         """
-        return self.item_repository.update(order_id, item_id, item_update)
+        return self.item_repository.update(order_id, plu, item_update)

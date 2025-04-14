@@ -29,7 +29,7 @@ class ItemRepository:
             raise NotFoundError("Item", f"{order_id}:{plu}")
         return cast(ItemModel, item)
 
-    def update(self, order_id: UUID, plu: UUID, item_update: ItemUpdate) -> ItemModel:
+    def update(self, order_id: UUID, plu: str, item_update: ItemUpdate) -> ItemModel:
         """
         Atomically update the status of an individual order item and log the change.
         Acquires a row-level lock to avoid concurrency issues.

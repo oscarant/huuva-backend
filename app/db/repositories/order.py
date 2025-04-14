@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import cast
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 
@@ -51,17 +52,17 @@ class OrderRepository:
         self.db.refresh(order)
         return order
 
-    def get(self, order_id: str) -> OrderModel:
+    def get(self, order_id: UUID) -> OrderModel:
         """
         Retrieve an Order by its UUID.
         Raises NotFoundError if not found.
         """
         order = self.db.get(OrderModel, order_id)
         if not order:
-            raise NotFoundError("Order", order_id)
+            raise NotFoundError("Order", str(order_id))
         return cast(OrderModel, order)
 
-    def update(self, order_id: str, order_update: OrderUpdate) -> OrderModel:
+    def update(self, order_id: UUID, order_update: OrderUpdate) -> OrderModel:
         """
         Atomically update the status of an Order and log the change.
         Uses a row-level lock to ensure concurrency safety.
@@ -74,7 +75,7 @@ class OrderRepository:
             .one_or_none()
         )
         if not order:
-            raise NotFoundError("Order", order_id)
+            raise NotFoundError("Order", str(order_id))
         order.status = order_update.status
         history_entry = OrderStatusHistoryModel(
             status=order_update.status,

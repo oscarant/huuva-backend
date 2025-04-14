@@ -13,7 +13,6 @@ def item_db_to_entity(item_db: Item) -> ItemEntity:
         quantity=item_db.quantity,
         status=item_db.status,
         status_history=[
-            ItemStatusHistory.model_validate(hist, from_attributes=True)
-            for hist in item_db.status_history
+            ItemStatusHistory.model_validate(hist) for hist in item_db.status_history
         ],
     )
