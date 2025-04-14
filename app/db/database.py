@@ -1,19 +1,22 @@
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
 from app.config.settings import settings
 
-# Create SQLAlchemy engine with the provided DATABASE_URL
-engine = create_engine(settings.DATABASE_URL, echo=False)
+# Create async SQLAlchemy engine
+engine = create_async_engine(settings.DATABASE_URL, echo=settings.DEBUG)
 
-# Configure a session factory
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+# Configure async session factory
+AsyncSessionLocal = async_sessionmaker(
+    engine, class_=AsyncSession, expire_on_commit=False
+)
 
 
 # Dependency to retrieve a database session for API endpoints
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
+async def get_db() -> AsyncGenerator[AsyncSession, None]:
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()

@@ -16,29 +16,32 @@ class OrderService:
 
     order_repository: OrderRepository
 
-    def create(self, order_in: OrderCreate) -> Order:
+    async def create(self, order_in: OrderCreate) -> Order:
         """
         Create a new order in the database.
         This method takes an OrderCreate object, maps it to the database model,
         and uses the repository to persist it. Returns the created order.
         """
-        order = self.order_repository.create(order_in)
+        order = await self.order_repository.create(order_in)
+
         return order_db_to_entity(order)
 
-    def get(self, order_id: UUID) -> Order:
+    async def get(self, order_id: UUID) -> Order:
         """
         Retrieve an order by its unique ID.
         This method uses the repository to fetch the order from the database.
         Raises NotFoundError if the order is not found.
         """
-        order = self.order_repository.get(order_id)
+        order = await self.order_repository.get(order_id)
+
         return order_db_to_entity(order)
 
-    def update(self, order_id: UUID, order_update: OrderUpdate) -> Order:
+    async def update(self, order_id: UUID, order_update: OrderUpdate) -> Order:
         """
         Update the status of an order.
         This method takes an OrderUpdate object, which contains the new status,
         and uses the repository to update the order in the database.
         """
-        order = self.order_repository.update(order_id, order_update)
+        order = await self.order_repository.update(order_id, order_update)
+
         return order_db_to_entity(order)

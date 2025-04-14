@@ -1,15 +1,13 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseSchema(BaseModel):
-    """Base schema for input models (no ORM mode)."""
+    """Base schema for input models"""
 
-    class Config:
-        from_attributes = False
+    model_config = ConfigDict(from_attributes=False)
 
 
 class OrmSchema(BaseModel):
-    """Base schema for response models (ORM mode enabled)."""
+    """Base schema for response models"""
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)

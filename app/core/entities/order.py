@@ -22,7 +22,7 @@ class Customer(BaseSchema):
 
 
 class OrderCreate(BaseSchema):
-    _id: Optional[UUID] = None
+    id: Optional[UUID] = None
     created: Optional[datetime] = None
     account: UUID
     brand_id: UUID
@@ -33,10 +33,6 @@ class OrderCreate(BaseSchema):
     items: List[ItemCreate]
     status: OrderStatus  # TODO: Ensure returning the status name
     status_history: List[OrderStatusHistory]
-
-    @property
-    def id(self):
-        return self._id
 
 
 class OrderUpdate(BaseSchema):

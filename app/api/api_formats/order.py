@@ -20,7 +20,7 @@ class Customer(BaseSchema):
 
 # Replica of the OrderPayload from the example
 class OrderCreate(BaseSchema):
-    _id: Optional[UUID] = None
+    id: Optional[UUID] = None
     created: Optional[datetime] = None
     account: UUID
     brand_id: UUID

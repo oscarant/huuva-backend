@@ -3,7 +3,8 @@ from datetime import datetime, timezone
 from typing import cast
 from uuid import UUID
 
-from sqlalchemy.orm import Session
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.entities.order import OrderCreate, OrderUpdate
 from app.db.mappings.order import order_create_to_db
@@ -15,9 +16,9 @@ from app.exceptions.exceptions import NotFoundError
 
 @dataclass
 class OrderRepository:
-    db: Session
+    db: AsyncSession
 
-    def create(self, order_in: OrderCreate) -> OrderModel:
+    async def create(self, order_in: OrderCreate) -> OrderModel:
         """
         Create a new Order (and associated items/status history) in the database.
         Assumptions:
@@ -48,40 +49,45 @@ class OrderRepository:
                 order.status_history.append(history_entry)
 
         self.db.add(order)
-        self.db.commit()
-        self.db.refresh(order)
+        await self.db.commit()
+        await self.db.refresh(order)
+
         return order
 
-    def get(self, order_id: UUID) -> OrderModel:
+    async def get(self, order_id: UUID) -> OrderModel:
         """
         Retrieve an Order by its UUID.
         Raises NotFoundError if not found.
         """
-        order = self.db.get(OrderModel, order_id)
+        order = await self.db.get(OrderModel, order_id)
+
         if not order:
             raise NotFoundError("Order", str(order_id))
+
         return cast(OrderModel, order)
 
-    def update(self, order_id: UUID, order_update: OrderUpdate) -> OrderModel:
+    async def update(self, order_id: UUID, order_update: OrderUpdate) -> OrderModel:
         """
         Atomically update the status of an Order and log the change.
         Uses a row-level lock to ensure concurrency safety.
         Raises NotFoundError if the Order is not found.
         """
-        order = (
-            self.db.query(OrderModel)
-            .filter(OrderModel.id == order_id)
-            .with_for_update()
-            .one_or_none()
-        )
+        query = select(OrderModel).where(OrderModel.id == order_id).with_for_update()
+        result = await self.db.execute(query)
+        order = result.scalar_one_or_none()
+
         if not order:
             raise NotFoundError("Order", str(order_id))
+
         order.status = order_update.status
+
         history_entry = OrderStatusHistoryModel(
             status=order_update.status,
             timestamp=datetime.now(timezone.utc),
         )
         order.status_history.append(history_entry)
-        self.db.commit()
-        self.db.refresh(order)
+
+        await self.db.commit()
+        await self.db.refresh(order)
+
         return cast(OrderModel, order)
