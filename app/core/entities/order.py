@@ -46,8 +46,7 @@ class Order(OrmSchema):
     account: UUID
     brand_id: UUID
     channel_order_id: str
-    customer_name: str
-    customer_phone: str
+    customer: Customer
     delivery_address: DeliveryAddress
     pickup_time: datetime
     items: List[Item]

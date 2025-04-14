@@ -22,8 +22,8 @@ class ItemUpdate(BaseSchema):
 
 
 class Item(OrmSchema):
-    plu: str
     name: str
+    plu: str
     quantity: int = Field(
         ...,
         ge=1,  # Assuming quantity should be a positive integer

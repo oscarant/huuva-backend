@@ -1,6 +1,5 @@
 from datetime import datetime
 from enum import Enum
-from uuid import UUID
 
 from app.core.entities.base import BaseSchema, OrmSchema
 
@@ -17,6 +16,5 @@ class ItemStatusHistoryCreate(BaseSchema):
 
 
 class ItemStatusHistory(OrmSchema):
-    id: UUID
     status: ItemStatus
     timestamp: datetime

@@ -1,5 +1,4 @@
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import Field
 
@@ -23,7 +22,6 @@ class ItemUpdate(BaseSchema):
 
 
 class Item(OrmSchema):
-    id: UUID
     name: str
     plu: str
     quantity: int
