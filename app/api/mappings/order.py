@@ -21,3 +21,7 @@ def map_item_status(schema_status: SchemaItemStatus) -> ModelItemStatus:
     return ModelItemStatus(schema_status.value)
     # Alternatively:
     # return ModelItemStatus[schema_status.name]
+
+
+def order_entity_to_api():
+    return None

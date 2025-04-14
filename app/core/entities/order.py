@@ -34,6 +34,10 @@ class OrderCreate(BaseSchema):
     status: OrderStatus  # TODO: Ensure returning the status name
     status_history: List[OrderStatusHistory]
 
+    @property
+    def id(self):
+        return self._id
+
 
 class OrderUpdate(BaseSchema):
     status: OrderStatus

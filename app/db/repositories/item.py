@@ -1,11 +1,12 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from typing import cast
+from uuid import UUID
 
 from sqlalchemy.orm import Session
 
+from app.core.entities.item import ItemUpdate
 from app.db.models.item import Item as ItemModel
-from app.db.models.item_status import ItemStatus as ItemStatusModel
 from app.db.models.item_status import ItemStatusHistory as ItemStatusHistoryModel
 from app.exceptions.exceptions import NotFoundError
 
@@ -14,7 +15,7 @@ from app.exceptions.exceptions import NotFoundError
 class ItemRepository:
     db: Session
 
-    def get_item_by_plu(self, order_id: str, plu: str) -> ItemModel:
+    def get(self, order_id: UUID, plu: str) -> ItemModel:
         """
         Retrieve an Item by its PLU code within a specific Order.
         Assumes that each order has unique PLU values for its items.
@@ -28,9 +29,7 @@ class ItemRepository:
             raise NotFoundError("Item", f"{order_id}:{plu}")
         return cast(ItemModel, item)
 
-    def update_item_status(
-        self, order_id: str, plu: str, new_status: ItemStatusModel
-    ) -> ItemModel:
+    def update(self, order_id: UUID, plu: UUID, item_update: ItemUpdate) -> ItemModel:
         """
         Atomically update the status of an individual order item and log the change.
         Acquires a row-level lock to avoid concurrency issues.
@@ -44,9 +43,9 @@ class ItemRepository:
         )
         if not item:
             raise NotFoundError("Item", f"{order_id}:{plu}")
-        item.status = new_status
+        item.status = item_update.status
         history_entry = ItemStatusHistoryModel(
-            status=new_status,
+            status=item_update.status,
             timestamp=datetime.now(timezone.utc),
         )
         item.status_history.append(history_entry)

@@ -3,7 +3,7 @@ from typing import List, Optional
 from pydantic import Field
 
 from app.core.entities.base import BaseSchema, OrmSchema
-from app.core.entities.item_status import ItemStatus
+from app.core.entities.item_status import ItemStatus, ItemStatusHistory
 
 
 class ItemCreate(BaseSchema):
@@ -26,4 +26,4 @@ class Item(OrmSchema):
     plu: str
     quantity: int
     status: ItemStatus
-    status_history: List[ItemStatus]
+    status_history: List[ItemStatusHistory]
