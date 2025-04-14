@@ -632,21 +632,6 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
-name = "prettyconf"
-version = "2.3.0"
-description = "Separation of settings from code."
-optional = false
-python-versions = ">=3.9"
-groups = ["main"]
-files = [
-    {file = "prettyconf-2.3.0-py3-none-any.whl", hash = "sha256:9c83eb90472522b0f2bc196f7d561ff8c26a1833f838cc32f948ea4d3973cb64"},
-    {file = "prettyconf-2.3.0.tar.gz", hash = "sha256:d73e025b25ffb188227c88f15755a7e6bfe57203700a9b6f45146b7d6bc55c67"},
-]
-
-[package.extras]
-aws = ["boto3 (>=1.28.0,<2.0.0)"]
-
-[[package]]
 name = "psycopg2-binary"
 version = "2.9.10"
 description = "psycopg2 - Python-PostgreSQL Database Adapter"
@@ -1265,4 +1250,4 @@ test = ["covdefaults (>=2.3)", "coverage (>=7.2.7)", "coverage-enable-subprocess
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13"
-content-hash = "8bb736d4ea3bdbe5911611f97d8a9a327cb92c5db2846e04aa210ce94081c4a3"
+content-hash = "bf119006b9a0e80e983249479e325e3bf5120fe9a50aa765da478e32495340c7"

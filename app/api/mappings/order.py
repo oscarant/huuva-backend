@@ -1,7 +1,7 @@
-from app.models.order import ItemStatus as ModelItemStatus
-from app.models.order import OrderStatus as ModelOrderStatus
-from app.schemas.order import ItemStatus as SchemaItemStatus
-from app.schemas.order import OrderStatus as SchemaOrderStatus
+from app.core.entities.item_status import ItemStatus as SchemaItemStatus
+from app.core.entities.order_status import OrderStatus as SchemaOrderStatus
+from app.db.models.item import ItemStatus as ModelItemStatus
+from app.db.models.order import OrderStatus as ModelOrderStatus
 
 
 def map_order_status(schema_status: SchemaOrderStatus) -> ModelOrderStatus:
