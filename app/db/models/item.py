@@ -21,7 +21,9 @@ class Item(Base):
     quantity = Column(Integer, nullable=False)
 
     status = Column(
-        SQLAlchemyEnum(ItemStatus), nullable=False, default=ItemStatus.ORDERED
+        SQLAlchemyEnum(ItemStatus, native_enum=False),
+        nullable=False,
+        default=ItemStatus.ORDERED,
     )
 
     order = relationship("Order", back_populates="items")

@@ -30,7 +30,7 @@ class Order(Base):
     customer_phone = Column(String, nullable=False)
 
     pickup_time = Column(DateTime, nullable=False)
-    status = Column(SQLAlchemyEnum(OrderStatus), nullable=False)
+    status = Column(SQLAlchemyEnum(OrderStatus, native_enum=False), nullable=False)
 
     delivery_city = Column(String, nullable=False)
     delivery_street = Column(String, nullable=False)

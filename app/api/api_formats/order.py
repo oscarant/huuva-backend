@@ -2,6 +2,8 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
+from pydantic import field_validator
+
 from app.api.api_formats.base import BaseSchema, OrmSchema
 from app.api.api_formats.item import Item, ItemCreate
 from app.api.api_formats.order_status import OrderStatus, OrderStatusHistory
@@ -32,9 +34,21 @@ class OrderCreate(BaseSchema):
     status: OrderStatus  # TODO: Ensure returning the status name
     status_history: List[OrderStatusHistory]
 
+    @field_validator("status", mode="before")
+    def convert_status(cls, value):
+        if isinstance(value, int):
+            return OrderStatus(value)
+        return value
+
 
 class OrderUpdate(BaseSchema):
     status: OrderStatus  # For updating overall order status
+
+    @field_validator("status", mode="before")
+    def convert_status(cls, value):
+        if isinstance(value, int):
+            return OrderStatus(value)
+        return value
 
 
 class Order(OrmSchema):

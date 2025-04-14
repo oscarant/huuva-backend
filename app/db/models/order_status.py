@@ -27,7 +27,7 @@ class OrderStatusHistory(Base):
         UUID(as_uuid=True), ForeignKey("orders.id"), nullable=False, index=True
     )
 
-    status = Column(SQLAlchemyEnum(OrderStatus), nullable=False)
+    status = Column(SQLAlchemyEnum(OrderStatus, native_enum=False), nullable=False)
     timestamp = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
 
     order = relationship("Order", back_populates="status_history")

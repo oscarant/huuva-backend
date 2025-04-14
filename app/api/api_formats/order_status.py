@@ -11,6 +11,9 @@ class OrderStatus(Enum):
     PICKED_UP = 4
     CANCELLED = 5
 
+    def __str__(self):
+        return self.name
+
 
 class OrderStatusHistory(OrmSchema):
     status: OrderStatus

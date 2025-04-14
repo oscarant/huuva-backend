@@ -25,7 +25,7 @@ class ItemStatusHistory(Base):
         UUID(as_uuid=True), ForeignKey("items.id"), nullable=False, index=True
     )
 
-    status = Column(SQLAlchemyEnum(ItemStatus), nullable=False)
+    status = Column(SQLAlchemyEnum(ItemStatus, native_enum=False), nullable=False)
     timestamp = Column(DateTime, default=datetime.now(timezone.utc), nullable=False)
 
     item = relationship("Item", back_populates="status_history")

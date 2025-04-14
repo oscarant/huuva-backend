@@ -9,6 +9,9 @@ class ItemStatus(Enum):
     PREPARING = 2
     READY = 3
 
+    def __str__(self):
+        return self.name
+
 
 class ItemStatusHistory(OrmSchema):
     status: ItemStatus
