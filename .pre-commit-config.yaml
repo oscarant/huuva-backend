@@ -25,6 +25,7 @@ repos:
         entry: poetry run black
         language: system
         types: [ python ]
+        args: [ "huuva_backend", "tests" ]  # Explicitly specify directories
 
       - id: ruff
         name: Check with Ruff

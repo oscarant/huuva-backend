@@ -2,16 +2,16 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
 
-from huuva_backend.api.api_formats.item import Item, ItemUpdate
-from huuva_backend.api.api_formats.order import Order, OrderCreate, OrderUpdate
 from huuva_backend.core.entities.item import ItemUpdate as ItemUpdateEntity
 from huuva_backend.core.entities.order import OrderCreate as OrderCreateEntity
 from huuva_backend.core.entities.order import OrderUpdate as OrderUpdateEntity
 from huuva_backend.dependencies import get_item_service, get_order_service
 from huuva_backend.services.item import ItemService
 from huuva_backend.services.order import OrderService
+from huuva_backend.web.api.api_formats.item import Item, ItemUpdate
+from huuva_backend.web.api.api_formats.order import Order, OrderCreate, OrderUpdate
 
-router = APIRouter(prefix="/orders", tags=["orders"])
+router = APIRouter()
 
 
 @router.post("/", response_model=Order, status_code=status.HTTP_201_CREATED)

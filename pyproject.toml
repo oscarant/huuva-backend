@@ -21,6 +21,8 @@ asyncpg = {version = "^0.30.0", extras = ["sa"]}
 httptools = "^0.6.4"
 pymongo = "^4.10.1"
 sentry-sdk = "^2.19.2"
+httpx = "^0.28.1"
+uvicorn-worker = "^0.3.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.5"
@@ -101,6 +103,7 @@ lint.ignore = [
     "D104",    # Missing docstring in public package
     "D100",    # Missing docstring in public module
     "D202",    # No blank lines allowed after function docstring
+    "S105",    # Hardcoded password string
     "ANN102",  # Missing type annotation for self in method
     "ANN101",  # Missing type annotation for argument
     "ANN401",  # typing.Any are disallowed in `**kwargs

@@ -2,8 +2,8 @@ from typing import Any, List, Optional
 
 from pydantic import Field, field_validator
 
-from huuva_backend.api.api_formats.base import BaseSchema, OrmSchema
-from huuva_backend.api.api_formats.item_status import ItemStatus, ItemStatusHistory
+from huuva_backend.web.api.api_formats.base import BaseSchema, OrmSchema
+from huuva_backend.web.api.api_formats.item_status import ItemStatus, ItemStatusHistory
 
 
 class ItemCreate(BaseSchema):

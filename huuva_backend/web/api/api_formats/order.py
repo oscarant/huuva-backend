@@ -4,9 +4,12 @@ from uuid import UUID
 
 from pydantic import field_validator
 
-from huuva_backend.api.api_formats.base import BaseSchema, OrmSchema
-from huuva_backend.api.api_formats.item import Item, ItemCreate
-from huuva_backend.api.api_formats.order_status import OrderStatus, OrderStatusHistory
+from huuva_backend.web.api.api_formats.base import BaseSchema, OrmSchema
+from huuva_backend.web.api.api_formats.item import Item, ItemCreate
+from huuva_backend.web.api.api_formats.order_status import (
+    OrderStatus,
+    OrderStatusHistory,
+)
 
 
 class DeliveryAddress(BaseSchema):
