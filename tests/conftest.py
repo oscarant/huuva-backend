@@ -91,7 +91,7 @@ def fastapi_app(
     :return: fastapi app with mocked dependencies.
     """
     application = get_app()
-    application.dependency_overrides[get_db_session] = lambda: dbsession
+    application.dependency_overrides[get_db_session] = lambda: dbsession  # type: ignore
     return application
 
 
@@ -106,5 +106,5 @@ async def client(
     :param fastapi_app: the application.
     :yield: client for the app.
     """
-    async with AsyncClient(app=fastapi_app, base_url="http://test", timeout=2.0) as ac:
+    async with AsyncClient(app=fastapi_app, base_url="http://test", timeout=2.0) as ac:  # type: ignore
         yield ac
