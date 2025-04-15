@@ -13,10 +13,10 @@ RUN poetry config cache-dir /tmp/poetry_cache
 
 # Copying requirements of a project
 COPY pyproject.toml poetry.lock /app/src/
-WORKDIR /app/src
+WORKDIR /app/src/
 
 # Installing requirements
-RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main
+RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main --no-root
 # Removing gcc
 RUN apt-get purge -y \
   gcc \
