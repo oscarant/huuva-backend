@@ -1,0 +1,42 @@
+from datetime import datetime, timezone
+from enum import Enum
+from uuid import UUID, uuid4
+
+from sqlalchemy import ForeignKey
+from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.types import Enum as SQLAlchemyEnum
+
+from huuva_backend.db.models.base import Base
+from huuva_backend.db.models.item import Item
+
+
+class ItemStatus(Enum):
+    ORDERED = 1
+    PREPARING = 2
+    READY = 3
+
+
+class ItemStatusHistory(Base):
+    __tablename__ = "item_status_history"
+
+    id: Mapped[UUID] = mapped_column(
+        PG_UUID(as_uuid=True),
+        primary_key=True,
+        default=uuid4,
+    )
+    item_id: Mapped[str] = mapped_column(
+        ForeignKey("items.plu", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    status: Mapped[ItemStatus] = mapped_column(
+        SQLAlchemyEnum(ItemStatus, native_enum=False),
+        nullable=False,
+    )
+    timestamp: Mapped[datetime] = mapped_column(
+        default=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
+
+    item: Mapped["Item"] = relationship(back_populates="status_history")

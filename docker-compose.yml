@@ -1,30 +1,55 @@
 services:
-  app:
-    build: .
-    environment:
-      - ENV_TYPE=dev
-      - DEBUG=True
-      - DATABASE_URL=postgresql://dev_user:dev_pass@postgres:5432/huuva_dev_db
-      - SENTRY_DSN=
-      - LOG_LEVEL=INFO
-    ports:
-      - "8000:8000"
-    volumes:
-      - .:/app
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:latest
+  api: &main_app
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    image: huuva_backend:${HUUVA_BACKEND_VERSION:-latest}
     restart: always
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      POSTGRES_USER: dev_user
-      POSTGRES_PASSWORD: dev_pass
-      POSTGRES_DB: huuva_dev_db
-    ports:
-      - "5432:5432"
+      HUUVA_BACKEND_HOST: 0.0.0.0
+      HUUVA_BACKEND_DB_HOST: huuva_backend-db
+      HUUVA_BACKEND_DB_PORT: 5432
+      HUUVA_BACKEND_DB_USER: huuva_backend
+      HUUVA_BACKEND_DB_PASS: huuva_backend
+      HUUVA_BACKEND_DB_BASE: huuva_backend
+
+  db:
+    image: postgres:16.3-bullseye
+    hostname: huuva_backend-db
+    environment:
+      POSTGRES_PASSWORD: "huuva_backend"
+      POSTGRES_USER: "huuva_backend"
+      POSTGRES_DB: "huuva_backend"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - huuva_backend-db-data:/var/lib/postgresql/data
+    restart: always
+    healthcheck:
+      test: pg_isready -U huuva_backend
+      interval: 2s
+      timeout: 3s
+      retries: 40
+
+  migrator:
+    image: huuva_backend:${HUUVA_BACKEND_VERSION:-latest}
+    restart: "no"
+    command: alembic upgrade head
+    environment:
+      HUUVA_BACKEND_DB_HOST: huuva_backend-db
+      HUUVA_BACKEND_DB_PORT: 5432
+      HUUVA_BACKEND_DB_USER: huuva_backend
+      HUUVA_BACKEND_DB_PASS: huuva_backend
+      HUUVA_BACKEND_DB_BASE: huuva_backend
+    depends_on:
+      db:
+        condition: service_healthy
+
+
 
 volumes:
-  postgres_data:
+  huuva_backend-db-data:
+    name: huuva_backend-db-data

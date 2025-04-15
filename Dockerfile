@@ -1,24 +1,33 @@
 # Dockerfile
-FROM python:3.13-slim
-
-# Prevent Python from writing pyc files and set unbuffered logging
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+FROM python:3.13-slim AS prod
+RUN apt-get update && apt-get install -y \
+  gcc \
+  && rm -rf /var/lib/apt/lists/*
 
 # Install Poetry
 RUN pip install --upgrade pip poetry
 
-WORKDIR /app
+# Configuring poetry
+RUN poetry config virtualenvs.create false
+RUN poetry config cache-dir /tmp/poetry_cache
 
-# Copy dependency files and install (without dev dependencies for production)
-COPY pyproject.toml poetry.lock* /app/
-RUN poetry config virtualenvs.create false && poetry install --no-dev --no-interaction --no-ansi
+# Copying requirements of a project
+COPY pyproject.toml poetry.lock /app/src/
+WORKDIR /app/src
 
-# Copy the rest of the application code
-COPY app /app/
+# Installing requirements
+RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main
+# Removing gcc
+RUN apt-get purge -y \
+  gcc \
+  && rm -rf /var/lib/apt/lists/*
 
-# Expose the FastAPI port
-EXPOSE 8000
+# Copying actuall application
+COPY . /app/src/
+RUN --mount=type=cache,target=/tmp/poetry_cache poetry install --only main
 
-# Run the application with Uvicorn (for dev; production may use Gunicorn+Uvicorn workers)
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["/usr/local/bin/python", "-m", "huuva_backend"]
+
+FROM prod AS dev
+
+RUN --mount=type=cache,target=/tmp/poetry_cache poetry install
