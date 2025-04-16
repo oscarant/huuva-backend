@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List
 from uuid import UUID, uuid4
 
-from sqlalchemy import String
+from sqlalchemy import Index, String
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
@@ -19,6 +19,18 @@ if TYPE_CHECKING:
 
 class Order(Base):
     __tablename__ = "orders"
+    __table_args__ = (
+        Index(
+            "ix_orders_account",
+            "account",
+            unique=False,
+        ),
+        Index(
+            "ix_created_at",
+            "created_at",
+            unique=False,
+        ),
+    )
 
     id: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
@@ -28,7 +40,6 @@ class Order(Base):
     created_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc),
         nullable=False,
-        index=True,
     )
     updated_at: Mapped[datetime] = mapped_column(
         default=lambda: datetime.now(timezone.utc),
@@ -39,7 +50,6 @@ class Order(Base):
     account: Mapped[UUID] = mapped_column(
         PG_UUID(as_uuid=True),
         nullable=False,
-        index=True,
     )
     brand_id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), nullable=False)
     channel_order_id: Mapped[str] = mapped_column(String, nullable=False)
