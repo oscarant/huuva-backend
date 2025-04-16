@@ -30,7 +30,13 @@ class ItemStatusHistory(Base):
         primary_key=True,
         default=uuid4,
     )
-    item_id: Mapped[str] = mapped_column(
+    order_id: Mapped[UUID] = mapped_column(
+        PG_UUID,
+        ForeignKey("items.order_id", ondelete="CASCADE"),
+        nullable=False,
+        index=True,
+    )
+    item_plu: Mapped[str] = mapped_column(
         ForeignKey("items.plu", ondelete="CASCADE"),
         nullable=False,
         index=True,
@@ -44,4 +50,8 @@ class ItemStatusHistory(Base):
         nullable=False,
     )
 
-    item: Mapped["Item"] = relationship(back_populates="status_history")
+    item: Mapped[Item] = relationship(
+        back_populates="status_history",
+        primaryjoin="and_(ItemStatusHistory.order_id==Item.order_id,"
+        "ItemStatusHistory.plu==Item.plu)",
+    )

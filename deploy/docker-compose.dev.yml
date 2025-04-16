@@ -11,3 +11,8 @@ services:
     environment:
       # Enables autoreload.
       HUUVA_BACKEND_RELOAD: "True"
+
+  db:
+    ports:
+      # Expose PostgreSQL port to host machine
+      - "5432:5432"

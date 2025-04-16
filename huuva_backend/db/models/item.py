@@ -24,6 +24,7 @@ class Item(Base):
         ForeignKey("orders.id", ondelete="CASCADE"),
         nullable=False,
         default=uuid4,
+        primary_key=True,
     )
     plu: Mapped[str] = mapped_column(String, nullable=False, primary_key=True)
     name: Mapped[str] = mapped_column(String, nullable=False)

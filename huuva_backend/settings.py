@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     db_port: int = 5432
     db_user: str = "huuva_backend"
     db_pass: str = "huuva_backend"
-    db_base: str = "admin"
+    db_base: str = "huuva_backend-db"
     db_echo: bool = True
 
     # CORS
