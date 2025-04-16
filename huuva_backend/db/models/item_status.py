@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 from datetime import datetime, timezone
 from enum import Enum
+from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
 from sqlalchemy import ForeignKey
@@ -8,7 +11,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
 from huuva_backend.db.base import Base
-from huuva_backend.db.models.item import Item
+
+if TYPE_CHECKING:
+    from huuva_backend.db.models.item import Item
 
 
 class ItemStatus(Enum):

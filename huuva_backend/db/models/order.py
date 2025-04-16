@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from datetime import datetime, timezone
-from typing import List
+from typing import TYPE_CHECKING, List
 from uuid import UUID, uuid4
 
 from sqlalchemy import String
@@ -8,8 +10,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
 from huuva_backend.db.base import Base
-from huuva_backend.db.models.item import Item
-from huuva_backend.db.models.order_status import OrderStatus, OrderStatusHistory
+from huuva_backend.db.models.order_status import OrderStatus
+
+if TYPE_CHECKING:
+    from huuva_backend.db.models.item import Item
+    from huuva_backend.db.models.order_status import OrderStatusHistory
 
 
 class Order(Base):

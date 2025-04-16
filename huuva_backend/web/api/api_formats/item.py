@@ -16,8 +16,9 @@ class ItemCreate(BaseSchema):
     )
     status: Optional[ItemStatus] = ItemStatus.ORDERED
 
+    @classmethod
     @field_validator("status", mode="before")
-    def convert_status(self, value: Any) -> ItemStatus:  # noqa
+    def convert_status(cls, value: Any) -> ItemStatus:  # noqa
         if isinstance(value, int):
             return ItemStatus(value)
         return value
@@ -26,8 +27,9 @@ class ItemCreate(BaseSchema):
 class ItemUpdate(BaseSchema):
     status: ItemStatus
 
+    @classmethod
     @field_validator("status", mode="before")
-    def convert_status(self, value: Any) -> ItemStatus:  # noqa
+    def convert_status(cls, value: Any) -> ItemStatus:  # noqa
         if isinstance(value, int):
             return ItemStatus(value)
         return value
@@ -44,8 +46,9 @@ class Item(OrmSchema):
     status: ItemStatus
     status_history: List[ItemStatusHistory]
 
+    @classmethod
     @field_validator("status", mode="before")
-    def convert_status(self, value: Any) -> ItemStatus:  # noqa
+    def convert_status(cls, value: Any) -> ItemStatus:  # noqa
         if isinstance(value, int):
             return ItemStatus(value)
         return value

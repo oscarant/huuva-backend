@@ -19,7 +19,7 @@ services:
       HUUVA_BACKEND_DB_BASE: huuva_backend
 
   db:
-    image: postgres:16.3-bullseye
+    image: postgres:17-bullseye
     hostname: huuva_backend-db
     environment:
       POSTGRES_PASSWORD: "huuva_backend"

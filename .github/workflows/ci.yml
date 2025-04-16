@@ -18,7 +18,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13.2'
+          python-version: '3.13'
           cache: 'poetry'
       - name: Install deps
         run: poetry install
@@ -33,7 +33,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13.2'
+          python-version: '3.13'
       - name: Update docker-compose
         uses: KengoTODA/actions-setup-docker-compose@v1
         with:

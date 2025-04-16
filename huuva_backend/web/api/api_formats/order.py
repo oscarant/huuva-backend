@@ -34,11 +34,12 @@ class OrderCreate(BaseSchema):
     delivery_address: DeliveryAddress
     pickup_time: datetime
     items: List[ItemCreate]
-    status: OrderStatus  # TODO: Ensure returning the status name
+    status: OrderStatus
     status_history: List[OrderStatusHistory]
 
+    @classmethod
     @field_validator("status", mode="before")
-    def convert_status(self, value: Any) -> OrderStatus:  # noqa
+    def convert_status(cls, value: Any) -> OrderStatus:  # noqa
         if isinstance(value, int):
             return OrderStatus(value)
         return value
@@ -47,8 +48,9 @@ class OrderCreate(BaseSchema):
 class OrderUpdate(BaseSchema):
     status: OrderStatus  # For updating overall order status
 
+    @classmethod
     @field_validator("status", mode="before")
-    def convert_status(self, value: Any) -> OrderStatus:  # noqa
+    def convert_status(cls, value: Any) -> OrderStatus:  # noqa
         if isinstance(value, int):
             return OrderStatus(value)
         return value
