@@ -182,7 +182,7 @@ For running tests on your local machine.
 
 I prefer doing it with docker:
 ```
-docker run -p "5432:5432" -e "POSTGRES_PASSWORD=huuva_backend" -e "POSTGRES_USER=huuva_backend" -e "POSTGRES_DB=huuva_backend" postgres:16.3-bullseye
+docker run -p "5432:5432" -e "POSTGRES_PASSWORD=huuva_backend" -e "POSTGRES_USER=huuva_backend" -e "POSTGRES_DB=huuva_backend" postgres:17-bullseye
 ```
 
 
