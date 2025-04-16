@@ -113,6 +113,9 @@ HUUVA_BACKEND_PORT="8000"
 HUUVA_BACKEND_ENVIRONMENT="dev"
 ```
 
+## Project structure
+<!-- This section describes the structure tree of the project -->
+
 ## Pre-commit
 
 To install pre-commit simply run inside the shell:
