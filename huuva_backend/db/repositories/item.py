@@ -4,6 +4,7 @@ from uuid import UUID
 
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from huuva_backend.core.entities.item import ItemUpdate
 from huuva_backend.db.models.item import Item
@@ -62,13 +63,16 @@ class ItemRepository:
         # Convert entity enum to model enum
         item.status = ItemStatusModel(item_update.status.value)
         history_entry = ItemStatusHistoryModel(
+            order_id=item.order_id,
+            item_plu=item.plu,
             status=ItemStatusModel(item_update.status.value),
             timestamp=datetime.now(),
         )
+
         item.status_history.append(history_entry)
 
-        await self.db.commit()
-        await self.db.refresh(item)
+        await self.db.flush()
+        await self.db.refresh(item, attribute_names=["status_history"])
 
         return item
 
@@ -79,7 +83,11 @@ class ItemRepository:
         This method is used internally to avoid code duplication.
         """
 
-        return select(ItemModel).where(
-            ItemModel.order_id == order_id,
-            ItemModel.plu == plu,
+        return (
+            select(ItemModel)
+            .options(selectinload(ItemModel.status_history))
+            .where(
+                ItemModel.order_id == order_id,
+                ItemModel.plu == plu,
+            )
         )
