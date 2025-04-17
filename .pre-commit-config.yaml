@@ -33,7 +33,7 @@ repos:
         language: system
         pass_filenames: false
         always_run: true
-        args: [ "check", "huuva_backend", "tests", "--fix" ]
+        args: [ "check", "huuva_backend", "tests", "--fix", "--unsafe-fixes" ]
 
       - id: mypy
         name: Validate types with MyPy
