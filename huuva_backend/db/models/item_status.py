@@ -1,11 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime, timezone
+from datetime import datetime
 from enum import IntEnum
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
-from sqlalchemy import ForeignKeyConstraint, Index
+from sqlalchemy import DateTime, ForeignKeyConstraint, Index
 from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
@@ -55,7 +55,8 @@ class ItemStatusHistory(Base):
         nullable=False,
     )
     timestamp: Mapped[datetime] = mapped_column(
-        default=lambda: datetime.now(timezone.utc),
+        DateTime,
+        default=lambda: datetime.now(),
         nullable=False,
     )
 

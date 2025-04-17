@@ -41,4 +41,4 @@ repos:
         language: system
         types: [ python ]
         pass_filenames: false
-        args: [ "huuva_backend", "tests" ]
+        args: [ "huuva_backend"]

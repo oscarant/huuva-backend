@@ -1,10 +1,12 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
 from sqlalchemy import Select, select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from huuva_backend.core.entities.order import OrderCreate, OrderUpdate
 from huuva_backend.db.mappings.order import order_create_to_db
@@ -38,6 +40,11 @@ class OrderRepository:
             - The 'account' uniquely identifies a customer.
             - We are not receiving an item status and status history for the order.
         """
+        # Check if the order already exists
+        existing = await self.db.get(OrderModel, order_in.id)
+        if existing:
+            raise ConflictError("Order", str(order_in.id))
+
         order = order_create_to_db(order_in)
 
         # Create items for the order
@@ -55,13 +62,12 @@ class OrderRepository:
 
         self.db.add(order)
         try:
-            await self.db.commit()
-        except Exception as e:
-            # Handle unique constraint violation
-            if "unique constraint" in str(e):
-                raise ConflictError("Order", str(order_in.id)) from e
-            raise e
-        await self.db.refresh(order)
+            await self.db.flush()
+        except IntegrityError as e:
+            await self.db.rollback()
+            raise ConflictError("Order", str(order_in.id)) from e
+
+        await self.db.refresh(order, attribute_names=["items", "status_history"])
 
         return order
 
@@ -101,7 +107,7 @@ class OrderRepository:
         history_entry = OrderStatusHistoryModel(
             order_id=order.id,
             status=OrderStatusModel(order_update.status.value),
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(),
         )
 
         # Create a new list if status_history doesn't exist yet
@@ -110,8 +116,9 @@ class OrderRepository:
         else:
             order.status_history.append(history_entry)
 
-        await self.db.commit()
-        await self.db.refresh(order)
+        await self.db.flush()
+
+        await self.db.refresh(order, attribute_names=["status_history"])
 
         return order
 
@@ -134,7 +141,10 @@ class OrderRepository:
         Returns:
             A list of Order models matching the filters
         """
-        query = select(OrderModel)
+        query = select(OrderModel).options(
+            selectinload(OrderModel.items),
+            selectinload(OrderModel.status_history),
+        )
 
         if status is not None:
             query = query.where(OrderModel.status == status)
@@ -180,9 +190,9 @@ class OrderRepository:
                 order_id=order.id,
                 item_plu=item_in.plu,
                 status=status_value,
-                timestamp=datetime.now(timezone.utc),
+                timestamp=datetime.now(),
             )
-            # Let SQLAlchemy handle setting the foreign keys
+
             item.status_history = [history_entry]
 
             items.append(item)
@@ -206,4 +216,11 @@ class OrderRepository:
 
     def _get_order_query(self, order_id: UUID) -> Select[tuple[Order]]:
         """Get the order query with the specified order ID."""
-        return select(OrderModel).where(OrderModel.id == order_id)
+        return (
+            select(OrderModel)
+            .options(
+                selectinload(OrderModel.items),
+                selectinload(OrderModel.status_history),
+            )
+            .where(OrderModel.id == order_id)
+        )

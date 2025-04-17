@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime, timezone
+from datetime import datetime
 from uuid import UUID
 
 from sqlalchemy import Select, select
@@ -63,7 +63,7 @@ class ItemRepository:
         item.status = ItemStatusModel(item_update.status.value)
         history_entry = ItemStatusHistoryModel(
             status=ItemStatusModel(item_update.status.value),
-            timestamp=datetime.now(timezone.utc),
+            timestamp=datetime.now(),
         )
         item.status_history.append(history_entry)
 

@@ -10,6 +10,7 @@ def order_create_to_db(order_create: OrderCreate) -> Order:
     """Convert an OrderCreate schema to a database model Order."""
     return Order(
         id=order_create.id,
+        created_at=order_create.created,
         account=order_create.account,
         brand_id=order_create.brand_id,
         channel_order_id=order_create.channel_order_id,
