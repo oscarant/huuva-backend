@@ -1,6 +1,6 @@
 """Test suite for the ItemService."""
 
-import uuid
+from uuid import uuid4
 
 import pytest
 
@@ -39,7 +39,7 @@ async def test_get_item_success(
 async def test_get_item_not_found(item_service: ItemService) -> None:
     """Test that ItemService.get raises NotFoundError for missing items."""
     with pytest.raises(NotFoundError):
-        await item_service.get(uuid.uuid4(), "NONEXISTENT")
+        await item_service.get(str(uuid4()), "NONEXISTENT")
 
 
 @pytest.mark.anyio
@@ -65,7 +65,7 @@ async def test_update_item_not_found(item_service: ItemService) -> None:
     """Test that ItemService.update raises NotFoundError for missing items."""
     with pytest.raises(NotFoundError):
         await item_service.update(
-            uuid.uuid4(),
+            str(uuid4()),
             "NO_SUCH_PLU",
             ItemUpdate(status=ItemStatusEnum.READY),
         )

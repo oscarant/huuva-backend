@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Optional
-from uuid import UUID
 
 from sqlalchemy import Select, select
 from sqlalchemy.exc import IntegrityError
@@ -71,7 +70,7 @@ class OrderRepository:
 
         return order
 
-    async def get(self, order_id: UUID) -> OrderModel:
+    async def get(self, order_id: str) -> OrderModel:
         """
         Retrieve an Order by its UUID.
 
@@ -85,7 +84,7 @@ class OrderRepository:
 
         return order
 
-    async def update(self, order_id: UUID, order_update: OrderUpdate) -> OrderModel:
+    async def update(self, order_id: str, order_update: OrderUpdate) -> OrderModel:
         """
         Atomically update the status of an Order and log the change.
 
@@ -107,7 +106,7 @@ class OrderRepository:
         history_entry = OrderStatusHistoryModel(
             order_id=order.id,
             status=OrderStatusModel(order_update.status.value),
-            timestamp=datetime.now(),
+            timestamp=datetime.now(timezone.utc),
         )
 
         # Create a new list if status_history doesn't exist yet
@@ -125,7 +124,7 @@ class OrderRepository:
     async def list(
         self,
         status: Optional[OrderStatusModel] = None,
-        account: Optional[UUID] = None,
+        account: Optional[str] = None,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
     ) -> List[OrderModel]:
@@ -190,7 +189,7 @@ class OrderRepository:
                 order_id=order.id,
                 item_plu=item_in.plu,
                 status=status_value,
-                timestamp=datetime.now(),
+                timestamp=datetime.now(timezone.utc),
             )
 
             item.status_history = [history_entry]
@@ -214,7 +213,7 @@ class OrderRepository:
             status_history.append(history_entry)
         return status_history
 
-    def _get_order_query(self, order_id: UUID) -> Select[tuple[Order]]:
+    def _get_order_query(self, order_id: str) -> Select[tuple[Order]]:
         """Get the order query with the specified order ID."""
         return (
             select(OrderModel)

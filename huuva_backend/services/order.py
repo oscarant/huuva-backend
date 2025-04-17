@@ -1,7 +1,6 @@
 from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
-from uuid import UUID
 
 from huuva_backend.core.entities.order import Order, OrderCreate, OrderUpdate
 from huuva_backend.core.entities.order_status import OrderStatus
@@ -32,7 +31,7 @@ class OrderService:
 
         return order_db_to_entity(order)
 
-    async def get_order(self, order_id: UUID) -> Order:
+    async def get_order(self, order_id: str) -> Order:
         """
         Retrieve an order by its unique ID.
 
@@ -46,7 +45,7 @@ class OrderService:
     async def list_orders(
         self,
         status: Optional[OrderStatus] = None,
-        account: Optional[UUID] = None,
+        account: Optional[str] = None,
         from_date: Optional[datetime] = None,
         to_date: Optional[datetime] = None,
     ) -> list[Order]:
@@ -65,7 +64,7 @@ class OrderService:
 
         return [order_db_to_entity(order) for order in orders]
 
-    async def update_order(self, order_id: UUID, order_update: OrderUpdate) -> Order:
+    async def update_order(self, order_id: str, order_update: OrderUpdate) -> Order:
         """
         Update the status of an order.
 

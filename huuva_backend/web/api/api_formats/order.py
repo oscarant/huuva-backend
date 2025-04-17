@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List, Optional
-from uuid import UUID
 
 from pydantic import Field
 
@@ -25,10 +24,10 @@ class Customer(BaseSchema):
 
 # Replica of the OrderPayload from the example
 class OrderCreate(BaseSchema):
-    id: Optional[UUID] = None
+    id: Optional[str] = None
     created: Optional[datetime] = None
-    account: UUID
-    brand_id: UUID
+    account: str
+    brand_id: str
     channel_order_id: str
     customer: Customer
     delivery_address: DeliveryAddress
@@ -43,11 +42,11 @@ class OrderUpdate(BaseSchema):
 
 
 class Order(OrmSchema):
-    id: UUID
+    id: str
     created_at: datetime
     updated_at: datetime
-    account: UUID
-    brand_id: UUID
+    account: str
+    brand_id: str
     channel_order_id: str
     customer: Customer
     delivery_address: DeliveryAddress
@@ -59,6 +58,6 @@ class Order(OrmSchema):
 
 class OrderQueryParams(BaseSchema):
     status: Optional[OrderStatus] = None
-    account: Optional[UUID] = None
+    account: Optional[str] = None
     from_date: Optional[datetime] = Field(None, alias="from")
     to_date: Optional[datetime] = Field(None, alias="to")

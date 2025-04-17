@@ -1,6 +1,5 @@
 from dataclasses import dataclass
-from datetime import datetime
-from uuid import UUID
+from datetime import datetime, timezone
 
 from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,7 +21,7 @@ from huuva_backend.exceptions.exceptions import NotFoundError
 class ItemRepository:
     db: AsyncSession
 
-    async def get(self, order_id: UUID, plu: str) -> ItemModel:
+    async def get(self, order_id: str, plu: str) -> ItemModel:
         """
         Retrieve an Item by its order ID and PLU code within a specific Order.
 
@@ -40,7 +39,7 @@ class ItemRepository:
 
     async def update(
         self,
-        order_id: UUID,
+        order_id: str,
         plu: str,
         item_update: ItemUpdate,
     ) -> ItemModel:
@@ -66,7 +65,7 @@ class ItemRepository:
             order_id=item.order_id,
             item_plu=item.plu,
             status=ItemStatusModel(item_update.status.value),
-            timestamp=datetime.now(),
+            timestamp=datetime.now(timezone.utc),
         )
 
         item.status_history.append(history_entry)
@@ -76,7 +75,7 @@ class ItemRepository:
 
         return item
 
-    def _get_item_query(self, order_id: UUID, plu: str) -> Select[tuple[Item]]:
+    def _get_item_query(self, order_id: str, plu: str) -> Select[tuple[Item]]:
         """
         Helper method to construct a query for retrieving an item.
 

@@ -1,5 +1,5 @@
-import uuid
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+from uuid import uuid4
 
 import pytest
 
@@ -92,7 +92,7 @@ class TestOrderRepository:
     ) -> None:
         """Test that getting a non-existent order raises NotFoundError."""
         # Arrange
-        non_existent_id = uuid.uuid4()
+        non_existent_id = str(uuid4())
 
         # Act & Assert
         with pytest.raises(NotFoundError) as exc_info:
@@ -133,7 +133,7 @@ class TestOrderRepository:
     ) -> None:
         """Test that updating a non-existent order raises NotFoundError."""
         # Arrange
-        non_existent_id = uuid.uuid4()
+        non_existent_id = str(uuid4())
         order_update = OrderUpdate(status=OrderStatusEnum.PREPARING)
 
         # Act & Assert
@@ -196,7 +196,7 @@ class TestOrderRepository:
         existing_order: OrderModel,
         second_order: OrderModel,
         different_account_order: OrderModel,
-        account_id: uuid.UUID,
+        account_id: str,
         order_repo: OrderRepository,
     ) -> None:
         """Test listing orders filtered by account."""
@@ -231,7 +231,7 @@ class TestOrderRepository:
     ) -> None:
         """Test listing orders filtered by date range."""
         # Arrange
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         yesterday = now - timedelta(days=1)
         tomorrow = now + timedelta(days=1)
         future = now + timedelta(days=7)
@@ -255,12 +255,12 @@ class TestOrderRepository:
         existing_order: OrderModel,
         second_order: OrderModel,
         different_account_order: OrderModel,
-        account_id: uuid.UUID,
+        account_id: str,
         order_repo: OrderRepository,
     ) -> None:
         """Test listing orders with multiple filters applied."""
         # Arrange
-        now = datetime.now()
+        now = datetime.now(timezone.utc)
         yesterday = now - timedelta(days=1)
         tomorrow = now + timedelta(days=1)
 

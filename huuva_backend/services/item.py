@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from uuid import UUID
 
 from huuva_backend.core.entities.item import Item, ItemUpdate
 from huuva_backend.db.repositories.item import ItemRepository
@@ -16,7 +15,7 @@ class ItemService:
 
     item_repository: ItemRepository
 
-    async def get(self, order_id: UUID, plu: str) -> Item:
+    async def get(self, order_id: str, plu: str) -> Item:
         """
         Retrieve an Item by its PLU code within a specific Order.
 
@@ -27,7 +26,7 @@ class ItemService:
             await self.item_repository.get(order_id, plu),
         )
 
-    async def update(self, order_id: UUID, plu: str, item_update: ItemUpdate) -> Item:
+    async def update(self, order_id: str, plu: str, item_update: ItemUpdate) -> Item:
         """
         Atomically update the status of an individual order item and log the change.
 

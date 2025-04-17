@@ -1,4 +1,4 @@
-import uuid
+from uuid import uuid4
 
 import pytest
 
@@ -46,7 +46,7 @@ class TestItemRepository:
     @pytest.mark.anyio
     async def test_get_item_not_found(self, item_repo: ItemRepository) -> None:
         """Tests that getting a non-existing item raises NotFoundError."""
-        fake_order = uuid.uuid4()
+        fake_order = str(uuid4())
         with pytest.raises(NotFoundError):
             await item_repo.get(fake_order, "NO_SUCH_ITEM")
 
@@ -82,7 +82,7 @@ class TestItemRepository:
     @pytest.mark.anyio
     async def test_update_item_not_found(self, item_repo: ItemRepository) -> None:
         """Tests that updating a non-existing item raises NotFoundError."""
-        fake_order = uuid.uuid4()
+        fake_order = str(uuid4())
         with pytest.raises(NotFoundError):
             await item_repo.update(
                 fake_order,

@@ -6,9 +6,9 @@ Includes: OrderRepository, ItemRepository, OrderService, ItemService,
 and common data fixtures.
 """
 
-import uuid
 from datetime import datetime, timedelta
 from typing import Any, AsyncGenerator, List
+from uuid import uuid4
 
 import pytest
 from fastapi import FastAPI
@@ -165,21 +165,21 @@ def item_service(item_repo: ItemRepository) -> ItemService:
 
 
 @pytest.fixture
-def order_id() -> uuid.UUID:
+def order_id() -> str:
     """Fixed UUID for testing order IDs."""
-    return uuid.UUID("12345678-1234-5678-1234-567812345678")
+    return str("12345678-1234-5678-1234-567812345678")
 
 
 @pytest.fixture
-def brand_id() -> uuid.UUID:
+def brand_id() -> str:
     """Fixed UUID for testing brand IDs."""
-    return uuid.UUID("87654321-4321-8765-4321-876543210000")
+    return str("87654321-4321-8765-4321-876543210000")
 
 
 @pytest.fixture
-def account_id() -> uuid.UUID:
+def account_id() -> str:
     """Fixed UUID for testing account IDs."""
-    return uuid.UUID("11111111-2222-3333-4444-555555555555")
+    return str("11111111-2222-3333-4444-555555555555")
 
 
 @pytest.fixture
@@ -232,9 +232,9 @@ def delivery_address() -> DeliveryAddress:
 
 @pytest.fixture
 def order_create_data(
-    order_id: uuid.UUID,
-    brand_id: uuid.UUID,
-    account_id: uuid.UUID,
+    order_id: str,
+    brand_id: str,
+    account_id: str,
     pickup_time: datetime,
     item_creates: List[ItemCreate],
     status_history: List[OrderStatusHistory],
@@ -267,8 +267,8 @@ async def existing_order(
 
 @pytest.fixture
 async def second_order(
-    brand_id: uuid.UUID,
-    account_id: uuid.UUID,
+    brand_id: str,
+    account_id: str,
     pickup_time: datetime,
     item_creates: List[ItemCreate],
     base_time: datetime,
@@ -278,7 +278,7 @@ async def second_order(
 ) -> OrderModel:
     """Create and return a second OrderModel for tests."""
     oc = OrderCreate(
-        id=uuid.uuid4(),
+        id=str(uuid4()),
         brand_id=brand_id,
         account=account_id,
         channel_order_id="ORDER_456",
@@ -299,7 +299,7 @@ async def second_order(
 
 @pytest.fixture
 async def different_account_order(
-    brand_id: uuid.UUID,
+    brand_id: str,
     pickup_time: datetime,
     item_creates: List[ItemCreate],
     base_time: datetime,
@@ -308,9 +308,9 @@ async def different_account_order(
     order_repo: OrderRepository,
 ) -> OrderModel:
     """Create and return an OrderModel with a different account."""
-    different_account_id = uuid.uuid4()
+    different_account_id = str(uuid4())
     oc = OrderCreate(
-        id=uuid.uuid4(),
+        id=str(uuid4()),
         brand_id=brand_id,
         account=different_account_id,
         channel_order_id="ORDER_789",

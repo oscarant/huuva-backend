@@ -1,6 +1,5 @@
 from datetime import datetime
 from typing import List, Optional
-from uuid import UUID
 
 from huuva_backend.core.entities.base import BaseSchema, OrmSchema
 from huuva_backend.core.entities.item import Item, ItemCreate
@@ -22,10 +21,10 @@ class Customer(BaseSchema):
 
 
 class OrderCreate(BaseSchema):
-    id: Optional[UUID] = None
+    id: Optional[str] = None
     created: Optional[datetime] = None
-    account: UUID
-    brand_id: UUID
+    account: str
+    brand_id: str
     channel_order_id: str
     customer: Customer
     delivery_address: DeliveryAddress
@@ -40,11 +39,11 @@ class OrderUpdate(BaseSchema):
 
 
 class Order(OrmSchema):
-    id: UUID
+    id: str
     created_at: datetime
     updated_at: datetime
-    account: UUID
-    brand_id: UUID
+    account: str
+    brand_id: str
     channel_order_id: str
     customer: Customer
     delivery_address: DeliveryAddress

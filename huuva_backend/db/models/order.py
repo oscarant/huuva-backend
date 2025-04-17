@@ -1,11 +1,10 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import TYPE_CHECKING, List
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-from sqlalchemy import DateTime, Index, String
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy import TIMESTAMP, Index, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
@@ -32,34 +31,36 @@ class Order(Base):
         ),
     )
 
-    id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+    id: Mapped[str] = mapped_column(
         primary_key=True,
-        default=uuid4,
+        default=lambda: str(uuid4()),
     )
     created_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=lambda: datetime.now(),
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
     updated_at: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=lambda: datetime.now(),
-        onupdate=lambda: datetime.now(),
+        TIMESTAMP(timezone=True),
+        default=lambda: datetime.now(timezone.utc),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
 
-    account: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+    account: Mapped[str] = mapped_column(
         nullable=False,
     )
-    brand_id: Mapped[UUID] = mapped_column(PG_UUID(as_uuid=True), nullable=False)
+    brand_id: Mapped[str] = mapped_column(nullable=False)
     channel_order_id: Mapped[str] = mapped_column(String, nullable=False)
 
     customer_name: Mapped[str] = mapped_column(String, nullable=False)
     customer_phone: Mapped[str] = mapped_column(String, nullable=False)
 
-    pickup_time: Mapped[datetime] = mapped_column(nullable=False)
+    pickup_time: Mapped[datetime] = mapped_column(
+        TIMESTAMP(timezone=True),
+        onupdate=lambda: datetime.now(timezone.utc),
+        nullable=False,
+    )
     status: Mapped[OrderStatus] = mapped_column(
         SQLAlchemyEnum(OrderStatus, native_enum=False),
         default=OrderStatus.RECEIVED,

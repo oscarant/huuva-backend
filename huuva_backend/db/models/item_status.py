@@ -1,12 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import IntEnum
 from typing import TYPE_CHECKING
-from uuid import UUID, uuid4
+from uuid import uuid4
 
-from sqlalchemy import DateTime, ForeignKeyConstraint, Index
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
+from sqlalchemy import TIMESTAMP, ForeignKeyConstraint, Index
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
@@ -38,13 +37,11 @@ class ItemStatusHistory(Base):
         ),
     )
 
-    id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+    id: Mapped[str] = mapped_column(
         primary_key=True,
-        default=uuid4,
+        default=lambda: str(uuid4()),
     )
-    order_id: Mapped[UUID] = mapped_column(
-        PG_UUID,
+    order_id: Mapped[str] = mapped_column(
         nullable=False,
     )
     item_plu: Mapped[str] = mapped_column(
@@ -55,8 +52,8 @@ class ItemStatusHistory(Base):
         nullable=False,
     )
     timestamp: Mapped[datetime] = mapped_column(
-        DateTime,
-        default=lambda: datetime.now(),
+        TIMESTAMP(timezone=True),
+        onupdate=lambda: datetime.now(timezone.utc),
         nullable=False,
     )
 

@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, List
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 from sqlalchemy import ForeignKey, Integer, String
-from sqlalchemy.dialects.postgresql import UUID as PG_UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.types import Enum as SQLAlchemyEnum
 
@@ -19,11 +18,11 @@ if TYPE_CHECKING:
 class Item(Base):
     __tablename__ = "items"
 
-    order_id: Mapped[UUID] = mapped_column(
-        PG_UUID(as_uuid=True),
+    order_id: Mapped[str] = mapped_column(
+        String,
         ForeignKey("orders.id", ondelete="CASCADE"),
         nullable=False,
-        default=uuid4,
+        default=lambda: str(uuid4()),
         primary_key=True,
     )
     plu: Mapped[str] = mapped_column(String, nullable=False, primary_key=True)

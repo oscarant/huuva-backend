@@ -1,6 +1,6 @@
 """Test suite for the OrderService."""
 
-import uuid
+from uuid import uuid4
 
 import pytest
 
@@ -44,7 +44,7 @@ async def test_get_order_success(
 async def test_get_order_not_found(order_service: OrderService) -> None:
     """Test that OrderService.get_order raises NotFoundError for missing orders."""
     with pytest.raises(NotFoundError):
-        await order_service.get_order(uuid.uuid4())
+        await order_service.get_order(str(uuid4()))
 
 
 @pytest.mark.anyio
@@ -83,6 +83,6 @@ async def test_update_order_not_found(order_service: OrderService) -> None:
     """Test that OrderService.update_order raises NotFoundError for missing orders."""
     with pytest.raises(NotFoundError):
         await order_service.update_order(
-            uuid.uuid4(),
+            str(uuid4()),
             OrderUpdate(status=OrderStatusEnum.READY),
         )
