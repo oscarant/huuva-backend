@@ -13,4 +13,6 @@ class NotFoundError(BaseAPIError):
 
 
 class ConflictError(BaseAPIError):
-    pass
+    def __init__(self, entity_name: str, identifier: str) -> None:
+        message = f"Conflict with {entity_name} with identifier: {identifier}"
+        super().__init__(message)

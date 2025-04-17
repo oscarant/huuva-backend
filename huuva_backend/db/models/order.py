@@ -60,6 +60,7 @@ class Order(Base):
     pickup_time: Mapped[datetime] = mapped_column(nullable=False)
     status: Mapped[OrderStatus] = mapped_column(
         SQLAlchemyEnum(OrderStatus, native_enum=False),
+        default=OrderStatus.RECEIVED,
         nullable=False,
     )
 

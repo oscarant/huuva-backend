@@ -2,10 +2,11 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from huuva_backend.core.entities.item import ItemUpdate
+from huuva_backend.db.models.item import Item
 from huuva_backend.db.models.item import Item as ItemModel
 from huuva_backend.db.models.item_status import (
     ItemStatus as ItemStatusModel,
@@ -22,12 +23,14 @@ class ItemRepository:
 
     async def get(self, order_id: UUID, plu: str) -> ItemModel:
         """
-        Retrieve an Item by its PLU code within a specific Order.
+        Retrieve an Item by its order ID and PLU code within a specific Order.
 
-        Assumes that each order has unique PLU values for its items.
+        Assumes that each order has unique (OrderID-PLU) values for its items.
         Raises NotFoundError if the item is not found.
         """
-        item = await self.db.get(ItemModel, (order_id, plu))
+
+        result = await self.db.execute(self._get_item_query(order_id, plu))
+        item = result.scalar_one_or_none()
 
         if not item:
             raise NotFoundError("Item", f"{order_id}:{plu}")
@@ -46,12 +49,11 @@ class ItemRepository:
         Acquires a row-level lock to avoid concurrency issues.
         Raises NotFoundError if the item is not found.
         """
-        query = (
-            select(ItemModel)
-            .where(ItemModel.order_id == order_id, ItemModel.plu == plu)
-            .with_for_update()
+
+        # Acquire a row-level lock on the item to prevent concurrent updates
+        result = await self.db.execute(
+            self._get_item_query(order_id, plu).with_for_update(),
         )
-        result = await self.db.execute(query)
         item = result.scalar_one_or_none()
 
         if not item:
@@ -69,3 +71,15 @@ class ItemRepository:
         await self.db.refresh(item)
 
         return item
+
+    def _get_item_query(self, order_id: UUID, plu: str) -> Select[tuple[Item]]:
+        """
+        Helper method to construct a query for retrieving an item.
+
+        This method is used internally to avoid code duplication.
+        """
+
+        return select(ItemModel).where(
+            ItemModel.order_id == order_id,
+            ItemModel.plu == plu,
+        )

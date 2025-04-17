@@ -34,7 +34,7 @@ class ItemStatusHistory(Base):
             "ix_item_status_history_order_id_item_plu",
             "order_id",
             "item_plu",
-            unique=True,
+            unique=False,
         ),
     )
 
@@ -62,5 +62,5 @@ class ItemStatusHistory(Base):
     item: Mapped[Item] = relationship(
         back_populates="status_history",
         primaryjoin="and_(ItemStatusHistory.order_id==Item.order_id,"
-        "ItemStatusHistory.plu==Item.plu)",
+        "ItemStatusHistory.item_plu==Item.plu)",
     )
