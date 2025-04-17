@@ -31,7 +31,7 @@ class OrderCreate(BaseSchema):
     delivery_address: DeliveryAddress
     pickup_time: datetime
     items: List[ItemCreate]
-    status: OrderStatus  # TODO: Ensure returning the status name
+    status: OrderStatus
     status_history: List[OrderStatusHistory]
 
 
@@ -50,5 +50,5 @@ class Order(OrmSchema):
     delivery_address: DeliveryAddress
     pickup_time: datetime
     items: List[Item]
-    status: OrderStatus  # TODO: Ensure returning the status name
+    status: OrderStatus
     status_history: List[OrderStatusHistory]

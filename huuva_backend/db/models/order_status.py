@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from datetime import datetime, timezone
-from enum import Enum
+from enum import IntEnum
 from typing import TYPE_CHECKING
 from uuid import UUID, uuid4
 
@@ -17,7 +17,7 @@ if TYPE_CHECKING:
 
 
 # Enum for order statuses.
-class OrderStatus(Enum):
+class OrderStatus(IntEnum):
     RECEIVED = 1
     PREPARING = 2
     READY = 3

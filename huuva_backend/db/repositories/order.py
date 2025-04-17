@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from datetime import datetime, timezone
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
-from sqlalchemy import select
+from sqlalchemy import Select, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from huuva_backend.core.entities.order import OrderCreate, OrderUpdate
@@ -15,6 +15,7 @@ from huuva_backend.db.models.item_status import (
 from huuva_backend.db.models.item_status import (
     ItemStatusHistory as ItemStatusHistoryModel,
 )
+from huuva_backend.db.models.order import Order
 from huuva_backend.db.models.order import Order as OrderModel
 from huuva_backend.db.models.order_status import (
     OrderStatus as OrderStatusModel,
@@ -70,7 +71,8 @@ class OrderRepository:
 
         Raises NotFoundError if not found.
         """
-        order = await self.db.get(OrderModel, order_id)
+        result = await self.db.execute(self._get_order_query(order_id))
+        order = result.scalar_one_or_none()
 
         if not order:
             raise NotFoundError("Order", str(order_id))
@@ -84,8 +86,10 @@ class OrderRepository:
         Uses a row-level lock to ensure concurrency safety.
         Raises NotFoundError if the Order is not found.
         """
-        query = select(OrderModel).where(OrderModel.id == order_id).with_for_update()
-        result = await self.db.execute(query)
+
+        result = await self.db.execute(
+            self._get_order_query(order_id).with_for_update(),
+        )
         order = result.scalar_one_or_none()
 
         if not order:
@@ -95,6 +99,7 @@ class OrderRepository:
         order.status = OrderStatusModel(order_update.status.value)
 
         history_entry = OrderStatusHistoryModel(
+            order_id=order.id,
             status=OrderStatusModel(order_update.status.value),
             timestamp=datetime.now(timezone.utc),
         )
@@ -109,6 +114,45 @@ class OrderRepository:
         await self.db.refresh(order)
 
         return order
+
+    async def list(
+        self,
+        status: Optional[OrderStatusModel] = None,
+        account: Optional[UUID] = None,
+        from_date: Optional[datetime] = None,
+        to_date: Optional[datetime] = None,
+    ) -> List[OrderModel]:
+        """
+        List orders with optional filtering.
+
+        Args:
+            status: Filter by order status
+            account: Filter by account ID
+            from_date: Filter orders created after this date
+            to_date: Filter orders created before this date
+
+        Returns:
+            A list of Order models matching the filters
+        """
+        query = select(OrderModel)
+
+        if status is not None:
+            query = query.where(OrderModel.status == status)
+
+        if account is not None:
+            query = query.where(OrderModel.account == account)
+
+        if from_date is not None:
+            query = query.where(OrderModel.created_at >= from_date)
+
+        if to_date is not None:
+            query = query.where(OrderModel.created_at <= to_date)
+
+        # Order by creation date, newest first
+        query = query.order_by(OrderModel.created_at.desc())
+
+        result = await self.db.execute(query)
+        return list(result.scalars().all())
 
     def _create_items(
         self,
@@ -133,6 +177,8 @@ class OrderRepository:
 
             # Create history entry
             history_entry = ItemStatusHistoryModel(
+                order_id=order.id,
+                item_plu=item_in.plu,
                 status=status_value,
                 timestamp=datetime.now(timezone.utc),
             )
@@ -157,3 +203,7 @@ class OrderRepository:
             )
             status_history.append(history_entry)
         return status_history
+
+    def _get_order_query(self, order_id: UUID) -> Select[tuple[Order]]:
+        """Get the order query with the specified order ID."""
+        return select(OrderModel).where(OrderModel.id == order_id)

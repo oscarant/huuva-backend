@@ -1,8 +1,8 @@
 from datetime import datetime
-from typing import Any, List, Optional
+from typing import List, Optional
 from uuid import UUID
 
-from pydantic import field_validator
+from pydantic import Field
 
 from huuva_backend.web.api.api_formats.base import BaseSchema, OrmSchema
 from huuva_backend.web.api.api_formats.item import Item, ItemCreate
@@ -37,23 +37,9 @@ class OrderCreate(BaseSchema):
     status: OrderStatus
     status_history: List[OrderStatusHistory]
 
-    @classmethod
-    @field_validator("status", mode="before")
-    def convert_status(cls, value: Any) -> OrderStatus:  # noqa
-        if isinstance(value, int):
-            return OrderStatus(value)
-        return value
-
 
 class OrderUpdate(BaseSchema):
     status: OrderStatus  # For updating overall order status
-
-    @classmethod
-    @field_validator("status", mode="before")
-    def convert_status(cls, value: Any) -> OrderStatus:  # noqa
-        if isinstance(value, int):
-            return OrderStatus(value)
-        return value
 
 
 class Order(OrmSchema):
@@ -67,5 +53,12 @@ class Order(OrmSchema):
     delivery_address: DeliveryAddress
     pickup_time: datetime
     items: List[Item]
-    status: OrderStatus  # TODO: Ensure returning the status name
+    status: OrderStatus
     status_history: List[OrderStatusHistory]
+
+
+class OrderQueryParams(BaseSchema):
+    status: Optional[OrderStatus] = None
+    account: Optional[UUID] = None
+    from_date: Optional[datetime] = Field(None, alias="from")
+    to_date: Optional[datetime] = Field(None, alias="to")
