@@ -24,7 +24,7 @@ class Customer(BaseSchema):
 
 # Replica of the OrderPayload from the example
 class OrderCreate(BaseSchema):
-    id: Optional[str] = Field(default=None, alias="_id")
+    id: Optional[str] = Field(alias="_id")
     created: Optional[datetime] = None
     account: str
     brand_id: str

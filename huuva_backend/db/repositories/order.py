@@ -141,7 +141,7 @@ class OrderRepository:
             A list of Order models matching the filters
         """
         query = select(OrderModel).options(
-            selectinload(OrderModel.items),
+            selectinload(OrderModel.items).selectinload(ItemModel.status_history),
             selectinload(OrderModel.status_history),
         )
 
@@ -218,7 +218,7 @@ class OrderRepository:
         return (
             select(OrderModel)
             .options(
-                selectinload(OrderModel.items),
+                selectinload(OrderModel.items).selectinload(ItemModel.status_history),
                 selectinload(OrderModel.status_history),
             )
             .where(OrderModel.id == order_id)
