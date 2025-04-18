@@ -8,3 +8,8 @@ api_router = APIRouter()
 # Alternatively, you can still include routers manually:
 api_router.include_router(views.health_router)
 api_router.include_router(views.order_router, prefix="/orders", tags=["orders"])
+api_router.include_router(
+    views.analytics_router,
+    prefix="/analytics",
+    tags=["analytics"],
+)

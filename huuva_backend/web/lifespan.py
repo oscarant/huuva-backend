@@ -4,6 +4,7 @@ from typing import AsyncGenerator
 from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from huuva_backend.scheduler import AnalyticsScheduler
 from huuva_backend.settings import settings
 
 
@@ -26,6 +27,17 @@ def _setup_db(app: FastAPI) -> None:  # pragma: no cover
     app.state.db_session_factory = session_factory
 
 
+def _setup_scheduler(app: FastAPI) -> None:
+    """
+    Set up the analytics scheduler.
+
+    :param app: fastAPI application.
+    """
+    scheduler = AnalyticsScheduler(app.state.db_session_factory)
+    app.state.scheduler = scheduler
+    scheduler.start()
+
+
 @asynccontextmanager
 async def lifespan_setup(
     app: FastAPI,
@@ -44,5 +56,10 @@ async def lifespan_setup(
     _setup_db(app)
     app.middleware_stack = app.build_middleware_stack()
 
+    # Set up and start the scheduler after db is initialized
+    _setup_scheduler(app)
+
     yield
+    # Shutdown scheduler before closing db connection
+    app.state.scheduler.shutdown()
     await app.state.db_engine.dispose()
