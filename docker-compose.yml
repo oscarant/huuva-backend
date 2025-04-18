@@ -17,6 +17,9 @@ services:
       HUUVA_BACKEND_DB_USER: huuva_backend
       HUUVA_BACKEND_DB_PASS: huuva_backend
       HUUVA_BACKEND_DB_BASE: huuva_backend
+    ports:
+      # Exposes application port.
+      - "8000:8000"
 
   db:
     image: postgres:17-bullseye
@@ -33,6 +36,9 @@ services:
       interval: 2s
       timeout: 3s
       retries: 40
+    ports:
+      # Expose PostgreSQL port to host machine
+      - "5432:5432"
 
   migrator:
     image: huuva_backend:${HUUVA_BACKEND_VERSION:-latest}
