@@ -146,7 +146,7 @@ async def test_create_order_with_example_payload(
     """
     url = fastapi_app.url_path_for("create_order")
     example_payload = {
-        "id": "60f87ea2a52dad8a3fa4860",
+        "_id": "60f87ea2a52dad8a3fa4860",
         "created": "2021-07-22T20:08:02Z",
         "account": "60bfc6dc4887c9851d5a0246",
         "brandId": "60bfc6dc4887c9851d5a0245",
@@ -172,7 +172,7 @@ async def test_create_order_with_example_payload(
     assert resp.status_code == 201
     data = resp.json()
 
-    assert data["id"] == example_payload["id"]
+    assert data["id"] == example_payload["_id"]
     assert data["channelOrderId"] == example_payload["channelOrderId"]
     assert [i["name"] for i in data["items"]] == [
         "Hawaii Burger",
