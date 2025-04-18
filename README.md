@@ -7,17 +7,6 @@ individual order items.
 
 ---
 
-## Table of Contents
-
-* [How to Run the Code](#How-to-Run-the-Code)
-  * [Using Docker Compose](#docker)
-* [Design Decisions and Assumptions](#design-decisions-and-assumptions)
-* [Time Spent](#time-spent)
-* [What I'd add with more time](#What-Id-add-with-more-time)
-
-
----
-
 ## How to Run the Code
 
 ## Docker Compose
@@ -83,6 +72,30 @@ docker run -p "5432:5432" -e "POSTGRES_PASSWORD=huuva_backend" -e "POSTGRES_USER
 ```bash
 pytest -vv .
 ```
+
+### API Endpoints
+
+- Core Order Management
+
+  - POST /orders — Create a new order
+
+  - GET /orders/{order_id} — Retrieve an order by ID
+
+  - PATCH /orders/{order_id} — Update overall order status
+
+  - PATCH /orders/{order_id}/items/{plu} — Update individual item status
+
+- Analytics
+
+  - GET /analytics/order-status-durations — Get average time (in seconds) spent in each order status
+
+  - GET /analytics/item-status-durations — Get average time (in seconds) spent in each item status
+
+  - GET /analytics/hourly-throughput — Get hourly order throughput (last 24 hours by default)
+
+  - GET /analytics/customer-order-counts — Get number of orders per customer (top 100)
+
+  - GET /analytics/refresh-materialized-views — Manually refresh materialized views
 
 ## Design Decisions and Assumptions
 There's a lot of design decisions and assumptions made in this project. So it is not possible
