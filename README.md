@@ -119,9 +119,11 @@ pytest -vv .
 
 - **Balance between make production quality and speed**
     - I tried to find a balance between production quality and speed.
-    - I added some production-like features (Sentry, OpenAPI, etc.) but didn't go too deep into it.
+    - I added some production-like features (Sentry, OpenAPI, Linters, CI, etc.) but didn't go too deep into it.
     - I think that the current state of the code is good enough for a production-like environment.
-    But it feels a bit wrong when you skip some things that you would do in a real production environment. A little bit of the description of this feeling is this picture:
+    But it feels a bit wrong when you skip some things that you would do in a real production environment. This is how it feels like:
+      <img src="https://github.com/user-attachments/assets/6e877236-c3b6-4d71-b072-8de32c75c580" width="480" height="360">
+
 
 ## Time Spent
 ~16 hours, even tho, this still being an estimate.
@@ -136,4 +138,4 @@ pytest -vv .
 - End‑to‑end **status transition validation** (only legal hops allowed, e.g. PREPARING → CANCELLED is OK, READY → PREPARING is not).
 - **Pagination & cursor API** for `/orders` list.
 - Web‑socket push so the kitchen UI gets live status updates without polling.
-- **Frontend** to visualize the order  and items.
+- **Frontend** to visualize the order and items.
