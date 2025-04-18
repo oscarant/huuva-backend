@@ -67,8 +67,10 @@ def get_item_update_entity(item_up: ApiItemUpdate = Body(...)) -> CoreItemUpdate
 
 def get_order_service(db: AsyncSession = Depends(get_db_session)) -> OrderService:
     """Dependency to get the OrderService instance."""
-    repo = OrderRepository(db=db)
-    return OrderService(order_repository=repo)
+    order_repo = OrderRepository(db=db)
+    item_repo = ItemRepository(db=db)
+
+    return OrderService(order_repository=order_repo, item_repository=item_repo)
 
 
 def get_item_service(db: AsyncSession = Depends(get_db_session)) -> ItemService:

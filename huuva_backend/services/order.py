@@ -2,10 +2,13 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+from huuva_backend.core.entities.item import ItemUpdate as ItemUpdateModel
+from huuva_backend.core.entities.item_status import ItemStatus as ItemStatusModel
 from huuva_backend.core.entities.order import Order, OrderCreate, OrderUpdate
 from huuva_backend.core.entities.order_status import OrderStatus
 from huuva_backend.db.mappings.order import order_db_to_entity
 from huuva_backend.db.models.order import OrderStatus as OrderStatusModel
+from huuva_backend.db.repositories.item import ItemRepository
 from huuva_backend.db.repositories.order import OrderRepository
 
 
@@ -19,6 +22,7 @@ class OrderService:
     """
 
     order_repository: OrderRepository
+    item_repository: ItemRepository
 
     async def create_order(self, order_in: OrderCreate) -> Order:
         """
@@ -66,11 +70,18 @@ class OrderService:
 
     async def update_order(self, order_id: str, order_update: OrderUpdate) -> Order:
         """
-        Update the status of an order.
+        Update the status of an order. Also updates the items in the order.
 
         This method takes an OrderUpdate object, which contains the new status,
         and uses the repository to update the order in the database.
         """
         order = await self.order_repository.update(order_id, order_update)
 
-        return order_db_to_entity(order)
+        # Update the status of items in the order to the new status
+        for item in order.items:
+            item_update = ItemUpdateModel(
+                status=ItemStatusModel(order_update.status.value),
+            )
+            await self.item_repository.update(order_id, item.plu, item_update)
+
+        return await self.get_order(order_id)

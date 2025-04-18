@@ -153,9 +153,12 @@ def item_repo(dbsession: AsyncSession) -> ItemRepository:
 
 
 @pytest.fixture
-def order_service(order_repo: OrderRepository) -> OrderService:
+def order_service(
+    order_repo: OrderRepository,
+    item_repo: ItemRepository,
+) -> OrderService:
     """Instantiate the OrderService with its repository."""
-    return OrderService(order_repository=order_repo)
+    return OrderService(order_repository=order_repo, item_repository=item_repo)
 
 
 @pytest.fixture

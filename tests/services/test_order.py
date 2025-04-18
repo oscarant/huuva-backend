@@ -86,3 +86,28 @@ async def test_update_order_not_found(order_service: OrderService) -> None:
             str(uuid4()),
             OrderUpdate(status=OrderStatusEnum.READY),
         )
+
+
+@pytest.mark.anyio
+async def test_update_order_with_specific_item(
+    order_service: OrderService,
+    existing_order: OrderModel,
+    first_item_plu: str,
+) -> None:
+    """Test that OrderService.update_order correctly updates the order and all items."""
+    # Get the initial state
+    await order_service.get_order(existing_order.id)
+
+    # Update order status with specific PLU
+    new_status = OrderStatusEnum.PREPARING
+    update = OrderUpdate(status=new_status)
+
+    # Perform the update
+    updated = await order_service.update_order(existing_order.id, update)
+
+    # Verify order status was updated
+    assert updated.status == new_status
+
+    # Verify all items were updated to the new status
+    for item in updated.items:
+        assert item.status == new_status
