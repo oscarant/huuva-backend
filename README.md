@@ -148,7 +148,7 @@ to cover all of them in detail. But I will try to cover the most important ones.
     - I tried to find a balance between production quality and speed.
     - I added some production-like features (Sentry, OpenAPI, Linters, CI, etc.) but didn't go too deep into it.
     - I think that the current state of the code it's in the middle between a production-ready code and a MVP.
-    As it feels a bit wrong when you skip some things that you would do in a real production environment. Graphic description below:
+    As it feels a bit wrong when you skip some things that you would do in a real production environment. Graphic description below:  
       <img src="https://github.com/user-attachments/assets/6e877236-c3b6-4d71-b072-8de32c75c580" width="480" height="360">
 
 
